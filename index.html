@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Link Shortener</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="navbar">
+        <a href="https://github.com/sankeer28/Gmail-to-Link" target="_blank" class="github-button">GitHub</a>
+    </div>
+    <div class="parent">
+        <div class="container">
+            <h1>Gmail to Link 🔗  </h1>
+            <div class="container2">
+                <p>Create shareable Gmail links</p>
+            </div>
+            
+            <p>Separate multiple recipients with space or ,</p>
+            <input type="text" placeholder="Recipients" id="emailRecipients"><br>
+            <input type="text" placeholder="Subject" id="emailSubject"><br>
+            <textarea placeholder="Body" rows="5" id="emailBody" style="min-height: 150px;"></textarea><br>
+            <button onclick="generateLink()">Generate Shortened Link</button>
+            <div id="shortenedLink"></div>
+        </div>
+    </div>
+
+<script>
+let emailRecipients = document.getElementById("emailRecipients");
+let emailSubject = document.getElementById("emailSubject");
+let emailBody = document.getElementById("emailBody");
+let shortenedLink = document.getElementById("shortenedLink");
+
+function generateLink(){
+    const recipients = encodeURIComponent(emailRecipients.value);
+    const subject = encodeURIComponent(emailSubject.value);
+    const body = encodeURIComponent(emailBody.value);
+    
+    if (recipients.length === 0 || subject.length === 0 || body.length === 0) {
+        alert("Please fill in all fields.");
+        return;
+    }
+    
+    const mailtoLink = `https://mail.google.com/mail/?view=cm&to=${recipients}&su=${subject}&body=${body}`;
+    fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(mailtoLink)}`)
+        .then(response => response.text())
+        .then(shortenedURL => {
+            shortenedLink.innerHTML = `<p>Shortened Link: <a href="${shortenedURL}" target="_blank">${shortenedURL}</a></p>`;
+        })
+        .catch(error => console.error('Error shortening URL:', error));
+}
+</script>
+</body>
+</html>
